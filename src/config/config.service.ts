@@ -1,12 +1,18 @@
 import {IConfigService} from "./config.interface";
-import {DotenvParseOutput} from "dotenv";
+import {DotenvParseOutput, config} from "dotenv";
 
 export class ConfigService implements IConfigService {
-    private config: DotenvParseOutput;
+    private readonly config: DotenvParseOutput;
     constructor() {
+        const {error, parsed} = config();
+        if (error || !parsed) throw new Error("Config doest found")
+        this.config = parsed;
     }
+
     get(key: string): string {
-        return "";
+        const res = this.config[key];
+        if (!res) throw new Error("Config doest found")
+        return res;
     }
 
 }
